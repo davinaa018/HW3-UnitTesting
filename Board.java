@@ -139,57 +139,50 @@ public class Board {
      */
     public boolean isWonBy(Player player) {
         int count = 0;
-        winningRow.clear();
 
         // Check Horizontal Win
         for (int y = 0; y < size; y++){
             for (int x = 0; x < size; x++){
                 if (isOccupiedBy(x, y, player)){
                     count++;
-                    winningRow.add(new Place(x, y));
+
                     if (count == 5){
                         return true;
                     }
                 }else{
                     count = 0;
-                    winningRow.clear();
+
                 }
             }
         }
 
         // Check Vertical Win
         count = 0;
-        winningRow.clear();
         for (int x = 0; x < size; x++){
             for (int y = 0; y < size; y++){
                 if (isOccupiedBy(x, y, player)){
                     count++;
-                    winningRow.add(new Place(x, y));
                     if (count == 5){
                         return true;
                     }
                 }else{
                     count = 0;
-                    winningRow.clear();
                 }
             }
         }
 
         //  Check Diagonal Win (top-left to bottom-right)
         count = 0;
-        winningRow.clear();
         for (int x = 0; x <= size - 5; x++){
             for (int y = 0; y <= size - 5; y++){
                 for (int i = 0; i < 5; i++){
                     if (isOccupiedBy(x+i, y+i, player)){
                         count++;
-                        winningRow.add(new Place(x+i, y+i));
                         if (count == 5){
                             return true;
                         }
                     }else{
                         count = 0;
-                        winningRow.clear();
                     }
                 }
             }
@@ -198,19 +191,16 @@ public class Board {
 
         // Check Diagonal Win (top-right to bottom-left)
         count = 0;
-        winningRow.clear();
         for (int x = size - 1; x >= 4; x--){
             for (int y = 0; y <= size - 5; y++){
                 for (int i = 0; i < 5; i++){
                     if (isOccupiedBy(x-i, y+i, player)){
                         count++;
-                        winningRow.add(new Place(x-i, y+i));
                         if (count == 5){
                             return true;
                         }
                     }else{
                         count = 0;
-                        winningRow.clear();
                     }
                 }
             }
@@ -222,7 +212,126 @@ public class Board {
      * the Iterable interface, you may return an object of
      * List<Place>. */
     public Iterable<Place> winningRow() {
-        return winningRow;
+        winningRow.clear();
+
+    // Check Horizontal Win
+    for (int y = 0; y < size; y++) {
+        for (int x = 0; x < size; x++) {
+            if (isOccupiedBy(x, y, player1)) {
+                int count = 1;
+                winningRow.add(new Place(x, y));
+                while (x + count < size && isOccupiedBy(x + count, y, player1)) {
+                    count++;
+                    winningRow.add(new Place(x + count - 1, y));
+                }
+                if (count >= 5) {
+                    return winningRow;
+                }
+                winningRow.clear();
+            }else if (isOccupiedBy(x, y, player2)) {
+                int count = 1;
+                winningRow.add(new Place(x, y));
+                while (x + count < size && isOccupiedBy(x + count, y, player2)) {
+                    count++;
+                    winningRow.add(new Place(x + count - 1, y));
+                }
+                if (count >= 5) {
+                    return winningRow;
+                }
+                winningRow.clear();
+            }
+        }
+    }
+
+    // Check Vertical Win
+    for (int x = 0; x < size; x++) {
+        for (int y = 0; y < size; y++) {
+            if (isOccupiedBy(x, y, player1)) {
+                int count = 1;
+                winningRow.add(new Place(x, y));
+                while (y + count < size && isOccupiedBy(x, y + count, player1)) {
+                    count++;
+                    winningRow.add(new Place(x, y + count - 1));
+                }
+                if (count >= 5) {
+                    return winningRow;
+                }
+                winningRow.clear();
+            }else if (isOccupiedBy(x, y, player2)) {
+                int count = 1;
+                winningRow.add(new Place(x, y));
+                while (y + count < size && isOccupiedBy(x, y + count, player2)) {
+                    count++;
+                    winningRow.add(new Place(x, y + count - 1));
+                }
+                if (count >= 5) {
+                    return winningRow;
+                }
+                winningRow.clear();
+            }
+        }
+    }
+
+    //  Check Diagonal Win (top-left to bottom-right)
+    for (int x = 0; x <= size - 5; x++) {
+        for (int y = 0; y <= size - 5; y++) {
+            if (isOccupiedBy(x, y, player1)) {
+                int count = 1;
+                winningRow.add(new Place(x, y));
+                while (x + count < size && y + count < size && isOccupiedBy(x + count, y + count, player1)) {
+                    count++;
+                    winningRow.add(new Place(x + count - 1, y + count - 1));
+                }
+                if (count >= 5) {
+                    return winningRow;
+                }
+                winningRow.clear();
+            }else if (isOccupiedBy(x, y, player2)) {
+                int count = 1;
+                winningRow.add(new Place(x, y));
+                while (x + count < size && y + count < size && isOccupiedBy(x + count, y + count, player2)) {
+                    count++;
+                    winningRow.add(new Place(x + count - 1, y + count - 1));
+                }
+                if (count >= 5) {
+                    return winningRow;
+                }
+                winningRow.clear();
+            }
+        }
+    }
+
+    // Check Diagonal Win (top-right to bottom-left)
+    for (int x = size - 1; x >= 4; x--) {
+        for (int y = 0; y <= size - 5; y++) {
+            if (isOccupiedBy(x, y, player1)) {
+                int count = 1;
+                winningRow.add(new Place(y, x));
+                while (x - count >= 0 && y + count < size && isOccupiedBy(x - count, y + count, player1)) {
+                    count++;
+                    winningRow.add(new Place(y+count - 1,x - count + 1));
+                }
+                if (count >= 5) {
+                    return winningRow;
+                }
+                winningRow.clear();
+            }else if (isOccupiedBy(x, y, player2)) {
+                int count = 1;
+                winningRow.add(new Place(x, y));
+                while (x - count >= 0 && y + count < size && isOccupiedBy(x - count, y + count, player2)) {
+                    count++;
+                    winningRow.add(new Place(y+count - 1,x - count + 1));
+                }
+                if (count >= 5) {
+                    return winningRow;
+                }
+                winningRow.clear();
+            }
+        }
+    }
+
+    return winningRow;
+
     }
 
     /**
@@ -250,5 +359,9 @@ public class Board {
         }
 
         // other methods if needed ...
+        @Override
+        public String toString() {
+            return "(" + x + "," + y + ")";
+        }
     }
 }
