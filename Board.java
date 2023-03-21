@@ -20,6 +20,8 @@ public class Board {
     private int[][] board;
     private List<Place> winningRow;
     private int size;
+    private Player player1;
+    private Player player2;
     
 
     /** Create a new board of the default size. */
@@ -32,6 +34,8 @@ public class Board {
         this.size = size;
         this.board = new int[size][size];
         this.winningRow = new ArrayList<>();
+        this.player1 = new Player("Player 1");
+        this.player2 = new Player("Player 2");
     }
 
     /** Return the size of this board. */
@@ -74,7 +78,7 @@ public class Board {
             throw new IllegalArgumentException("Place is already occupied");
         }
         // 1 represents Player 1, 2 represents Player 2
-        board[x][y] = player.equals(new Player("Player 1")) ? 1 : 2;
+        board[x][y] = player.name().equals(player1.name()) ? 1 : 2;
     }
     
     /**
@@ -107,8 +111,7 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public boolean isOccupiedBy(int x, int y, Player player) {
-        int playerSymbol = player.equals(new Player("Player 1")) ? 1 : 2;
-        return board[x][y] == playerSymbol;
+        return board[x][y] == (player.name().equals(player1.name()) ? 1 : 2);
     }
 
     /**
@@ -119,11 +122,13 @@ public class Board {
      * @param y 0-based row (horizontal) index
      */
     public Player playerAt(int x, int y) {
-        int playerSymbol = board[x][y];
-        if (playerSymbol == 1 || playerSymbol == 2){
-            return new Player("Player " +playerSymbol);
+        if (board[x][y] == 1){
+            return player1;
+        }else if (board[x][y] == 2){
+            return player2;
+        }else{
+            return null;
         }
-        return null;
     }
 
     /** 
@@ -170,7 +175,7 @@ public class Board {
             }
         }
 
-        // Check Diagonal Win (top-left to bottom-right)
+        //  Check Diagonal Win (top-left to bottom-right)
         count = 0;
         winningRow.clear();
         for (int x = 0; x <= size - 5; x++){
@@ -189,17 +194,18 @@ public class Board {
                 }
             }
         }
+        
 
         // Check Diagonal Win (top-right to bottom-left)
         count = 0;
         winningRow.clear();
-        for (int x = size-1; x >= 4; x++){
-            for(int y = 0; y <= size - 5; y++){
+        for (int x = size - 1; x >= 4; x--){
+            for (int y = 0; y <= size - 5; y++){
                 for (int i = 0; i < 5; i++){
                     if (isOccupiedBy(x-i, y+i, player)){
                         count++;
                         winningRow.add(new Place(x-i, y+i));
-                        if(count == 5){
+                        if (count == 5){
                             return true;
                         }
                     }else{
